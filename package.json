@@ -4,7 +4,7 @@
   "description": "Beautify Benchmark.js's output into readable form.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js && node testNonTTY.js > /dev/null"
   },
   "repository": {
     "type": "git",
