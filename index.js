@@ -21,6 +21,7 @@ var name_maxlen = 0
     , 'slow': 31
     , 'green': 32
   }
+  , isTTY = typeof process !== 'undefined' && process.stdout && process.stdout.isTTY
 
 console.log('')
 
@@ -34,8 +35,14 @@ function add(bench) {
   ops_arr.push(ops)
   ops_top = Math.max.apply(Math, ops_arr);
 
+  exports.numCompleted++;
+
+  if (!isTTY) {
+    return
+  }
+
   process.stdout.write('  '
-    + color('pending', (++exports.numCompleted))
+    + color('pending', exports.numCompleted)
     + ' test'
     + (exports.numCompleted > 1 ? 's' : '')
     + ' completed.\u000D')
@@ -58,6 +65,14 @@ function log(options) {
   var reset      = options.reset || true
     , tolerances = options.tolerances || { pass: .95, mid: .80 }
 
+  if (!isTTY) {
+    process.stdout.write('  '
+      + color('pending', exports.numCompleted)
+      + ' test'
+      + (exports.numCompleted > 1 ? 's' : '')
+      + ' completed.')
+  }
+
   console.log('\n')
 
   for (var i = 0; i < exports.store.length; i++) {
@@ -66,7 +81,9 @@ function log(options) {
 
   if (options.reset === undefined || options.reset === true) exports.reset()
 
-  console.log('')
+  if (isTTY) {
+    console.log('')
+  }
 }
 
 function reset() {
@@ -108,11 +125,10 @@ function logBench(bench, tolerances) {
         : deviation > 2 ? 'medium'
         : 'green', deviation)
       + color('pending', '% ')
-      + '\u001b[' + colors['pass'] + 'm('
+      + color('pass', '('
         + size
         + ' run' + (size == 1 ? '' : 's')
-        + ' sampled)'
-      + '\u001b[0m'
+        + ' sampled)')
   }
   console.log('  ' + result)
 }
@@ -124,7 +140,11 @@ function makeSpace(len) {
 }
 
 function color(type, str) {
-  return '\u001b[' + colors[type] + 'm' + str + '\u001b[0m'
+  if (isTTY) {
+    return '\u001b[' + colors[type] + 'm' + str + '\u001b[0m'
+  }
+
+  return str
 }
 
 function formatNumber(number) {
