@@ -1,6 +1,6 @@
 var assert = require('assert')
 
-assert.strictEqual(process.stdout.isTTY, false, 'This test should be run with its output piped')
+assert.strictEqual(Boolean(process.stdout.isTTY), false, 'This test should be run with its output piped')
 
 var _log = console.log
 
