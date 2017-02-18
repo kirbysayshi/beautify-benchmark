@@ -2,6 +2,8 @@
 
 Beautify Benchmark.js's output into readable form.
 
+NOTE: this is a fork with changes from one of the open PRs applied (https://github.com/Fishrock123/beautify-benchmark/pull/2).
+
 ## API
 
 ```js
